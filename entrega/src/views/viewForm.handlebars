@@ -1,0 +1,86 @@
+<h1 >
+    Cadastre seu produto 
+</h1>
+
+<form class="form" action="/viewForm" method="post">
+    <input class="form-control" type="text" name="code" id="code" placeholder="código">
+    <input class="form-control" type="text" name="title" id="title" placeholder="título">
+    <input class="form-control" type="text" name="description" id="description" placeholder="Descrição">
+    <input class="form-control" type="text" name="price" id="price" placeholder="Preço">
+    <input class="form-control" type="text" name="stock" id="stock" placeholder="Estoque">
+    <input class="form-control" type="text" name="thumbnail" id="thumbnail" placeholder="Thumbnail">
+    <button class="button" type="submit">Enviar</button>
+</form>
+
+{{!-- <div>
+  <h2>excluir produto</h2>
+<form action="" method="delete"> 
+  <input class="form-control" type="text" name="code" id="code" placeholder="código"> --}}
+  
+</form> 
+</div>
+
+<div>
+  Lista de Produtos!!!
+  {{#each resultado}}
+    <p>
+      Produto
+      <ul>
+        <li>title: {{title}}</li>
+        <li>description: {{description}}</li>
+        <li>price: {{price}}</li>
+        <li>code: {{code}}</li>
+        <li>thumbnail:{{thumbnail}}</li>
+        <li>stock: {{stock}}</li>
+      </ul>
+      <button class="delete-button" data-code="{{code}}" >Deletar</button>
+      <button class="edit-button" data-code="{{code}}" data-id="{{_id}}">Editar</button>
+    </p>
+    <br />
+  {{/each}}
+
+</div>
+
+<script>
+  const deleteButtons = document.querySelectorAll('.delete-button')
+  const editButtons = document.querySelectorAll('.edit-button');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const userEmail = button.getAttribute('data-code');
+      await deleteUsuario(userEmail);
+    });
+  });
+
+  editButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const userId = button.getAttribute('data-id');
+      console.log('userId', userId);
+      window.location.href = `/edit/${userId}`;
+    });
+  });
+
+  async function deleteUsuario(code) {
+    try {
+      const response = await fetch(`/viewForm/${code}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log(`produto com codigo ${code} deletado com sucesso.`);
+
+        // Redirecionar para a página que exibe o e-mail deletado
+        window.location.href = `/product-deleted/${code}`;
+      } else {
+        console.error(`Erro ao excluir produto. Status: ${response.status}`);
+        // Exibir mensagem de erro ou realizar outra ação apropriada
+      }
+    } catch (error) {
+      console.error('Erro na solicitação de exclusão:', error);
+      // Exibir mensagem de erro ou realizar outra ação apropriada
+    } 
+  }
+</script>
