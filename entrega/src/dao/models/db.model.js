@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
 const productCollection = "products"
+const messageCollection = "messages";
+
 
 const resultadoSchema = new mongoose.Schema({
     title: String,
@@ -14,6 +16,16 @@ const resultadoSchema = new mongoose.Schema({
     stock: Number
 });
 
-const productModel = mongoose.model(productCollection, resultadoSchema)
+const messageSchema = new mongoose.Schema({
+  user:String,
+  message: [String],
+  createdAt: { type: Date, default: Date.now }
+});
 
-export  { productModel };
+
+const productModel = mongoose.model(productCollection, resultadoSchema)
+const messageModel = mongoose.model(messageCollection, messageSchema);
+
+
+
+export  { productModel, messageModel };

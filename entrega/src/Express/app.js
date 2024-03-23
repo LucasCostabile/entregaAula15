@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+
 const caminhoAtual = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(caminhoAtual);
 const diretorioPublico = path.join(`${__dirname}/../public`);
@@ -51,11 +52,26 @@ const prodManager = new ProductManager();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const messages = [];
+
 io.on("connection", (socket) => {
     console.log("Usuario conectado");
+    socket.emit("messages", {}); // disparando um evento com objeto vazio
+
+  // recebendo o nome do usuario conectado e exibindo no terminal
+  socket.on("userName", function (data) {
     
+    socket.broadcast.emit('userConnected', data); // evento usado para notificar todos os clientes conectados, exceto o cliente atual
+  });
+  // recebendo mensagens enviadas pelo cliente
+  socket.on("message", function (data) {
+    //console.log(data); // exibe a mensagem recebida
+    messages.push(data); // adiciona a mensagem recebida ao array de mensagens
+    io.sockets.emit("messageLogs",messages);
+    //emite um evento para todos os clientes, o array de mensagens "messages" é enviado junto com o evento
+  });
   
-    const sendUpdatedProds = async () => {
+    /* const sendUpdatedProds = async () => {
       const productsList = await prodManager.readProductsFromFile();
       socket.emit("Updated_Products", productsList);
     };
@@ -65,7 +81,7 @@ io.on("connection", (socket) => {
     socket.on("delete", (data) => {
       const { id } = data;
       prodManager.deleteProductById(id);
-    });
-  });
+    });*/
+  }); 
 
 export default server;

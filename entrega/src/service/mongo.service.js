@@ -1,21 +1,19 @@
-import { productModel } from "../dao/models/db.model.js";
-
-
+import { productModel, messageModel } from "../dao/models/db.model.js";
 
 const getProduct =  async (req, res) => {
     try { 
-        let resultado = await productModel.find({});
-        resultado = resultado.map((product) => product.toJSON())
+        let produtos = await productModel.find({});
+        produtos = produtos.map((product) => product.toJSON())
        
-         return resultado;
+         return produtos;
     } catch {
         console.log("erro ao pegar produtos no banco")
     }
 };
 
 const createProduct = async (product) => {
-    let created = await productModel.create(product)
-    return created;
+    let createdProduct = await productModel.create(product)
+    return createdProduct;
 }
 
 const deleteProduct = async(code) => {
@@ -24,6 +22,34 @@ const deleteProduct = async(code) => {
     return deletedProduct
 }
 
+const getProductById = async (uid) => {
+    const product = await productModel.findById(uid);
+    return [product];
+}
 
 
-export default { getProduct, createProduct, deleteProduct };
+const updateProduct = async ({code, title, description, price, stock, thumbnail }, uid) => {
+    const productUpdated = await productModel.updateOne({_id: uid}, {code, title, description, price, stock, thumbnail });
+    return productUpdated;
+};
+
+
+const createUser = async ( userData ) => {
+    console.log(userData)
+    try {
+      let userExist = await messageModel.findOne({user: userData.user});
+      if (userExist) {
+        userExist.message.push(userData.message);
+        await userExist.save();
+        return userExist;
+      } else {
+        let userCreated = await messageModel.create(userData);
+        return userCreated;
+      } 
+  
+    } catch (error) {
+        console.log(error);
+      }
+  };
+  
+export default { getProduct, createProduct, deleteProduct, getProductById, updateProduct, createUser };

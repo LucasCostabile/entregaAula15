@@ -22,7 +22,7 @@
 
 <div>
   Lista de Produtos!!!
-  {{#each resultado}}
+  {{#each product}}
     <p>
       Produto
       <ul>
@@ -54,9 +54,9 @@
 
   editButtons.forEach(button => {
     button.addEventListener('click', async () => {
-      const userId = button.getAttribute('data-id');
-      console.log('userId', userId);
-      window.location.href = `/edit/${userId}`;
+      const productId = button.getAttribute('data-id');
+      console.log('productId', productId);
+      window.location.href = `/editForm/${productId}`;
     });
   });
 
@@ -73,7 +73,7 @@
         console.log(`produto com codigo ${code} deletado com sucesso.`);
 
         // Redirecionar para a página que exibe o e-mail deletado
-        window.location.href = `/product-deleted/${code}`;
+        window.location.href = "/viewForm/";
       } else {
         console.error(`Erro ao excluir produto. Status: ${response.status}`);
         // Exibir mensagem de erro ou realizar outra ação apropriada
